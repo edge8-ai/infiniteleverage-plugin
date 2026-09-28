@@ -1,25 +1,51 @@
-# infiniteleverage-plugin
+# infiniteleverage-plugin — retired
 
-> ⚠️ **Superseded — frozen.** This repo (and the `infiniteleverage-8-plugin` mirror) is replaced by
-> the v2 plugin that ships directly from the canonical template repo:
-> **https://github.com/talentedgeai/infiniteleverage-8-agents-template**
->
-> No new features land here. Only critical safety fixes are accepted until all installs
-> have migrated to v2, after which this repo will be archived.
+> 🪦 **Retired and archived (2026-09-28).** This was the v1 Infinite Leverage plugin (the
+> 8-agent system). It gets no further changes. Everything now lives in one repo:
+> **https://github.com/edge8-ai/infinite-leverage** — the v2 plugin, its 4 agents, their
+> skills and the project scaffold.
 
-## Why superseded
+The files stay here, read-only, so nothing that still points at this repo breaks. Don't
+install from it.
 
-This repo was a hand-copied snapshot of the template repo's `setup-skills/`, mirrored by CI to a
-third repo. The copies drifted (this repo still shipped skills deleted upstream), the mirror
-workflow never ran, and the plugin's `hooks.json` pointed at `~/.claude/hooks/*` instead of
-`${CLAUDE_PLUGIN_ROOT}` — so plugin updates never took effect without a manual copy step.
+## Moving to v2
 
-v2 collapses all of it into one repo that ships the plugin itself, with a bare-minimum payload
-(2 skills, 2 opt-in telemetry hooks, no global writes). See the cleanup plan in the template repo.
+v1 and v2 use the same names (`infiniteleverage@infiniteleverage`), so remove v1 first:
 
-## Migration
+```bash
+claude plugin uninstall infiniteleverage@infiniteleverage
+claude plugin marketplace remove infiniteleverage
+```
 
-1. Remove this plugin/marketplace from your Claude Code settings.
-2. Add the template repo as the marketplace and install `infiniteleverage` v2.
-3. The v2 plugin's first session run cleans up residue that v1's `init`/`patch` copied into
-   `~/.claude/` (agents, skills, hooks, rules, the `Bash(*)` permission grant).
+Then install v2:
+
+```bash
+claude plugin marketplace add edge8-ai/infinite-leverage
+claude plugin install infiniteleverage@infiniteleverage
+```
+
+v2 installs nothing machine-wide. The agents go into each project: run `/il-adopt` in an
+existing repo or `/il-project` for a new one, restart Claude Code, then run `/il-doctor`.
+
+**Edge8 machines:** v1's `init` and `patch` copied agents, skills, hooks, rules and a
+`Bash(*)` permission grant into `~/.claude/`. Uninstalling the plugin does not remove
+those copies — the private `edge8-telemetry` plugin does, on its first run.
+
+## What changed
+
+| v1 (here) | v2 |
+|---|---|
+| 8 agents, installed globally into `~/.claude/agents/` | 4 agents (product-manager, developer, qa, devops), installed per project |
+| `/infiniteleverage-init`, `-onboard` | Install the plugin; nothing to set up on the machine |
+| `/infiniteleverage-patch` | Marketplace updates; projects refresh with `/il-adopt` |
+| `/infiniteleverage-validate` | `/il-doctor` |
+| `/infiniteleverage-project` | `/il-project` |
+| SessionStart / Stop hooks, telemetry | No hooks; telemetry moved to the private `edge8-telemetry` plugin |
+
+Why v1 was replaced: this repo was a hand-copied snapshot of the template repo's
+`setup-skills/`. The copies drifted, and `hooks.json` pointed at `~/.claude/hooks/*`
+instead of `${CLAUDE_PLUGIN_ROOT}`, so plugin updates never took effect without a manual
+copy step. v2 ships the plugin straight from the canonical repo.
+
+The `edge8-ai/infiniteleverage-8-plugin` mirror mentioned in older notes is **not**
+retired: it now distributes v2 to the claude.ai org plugin directory.
