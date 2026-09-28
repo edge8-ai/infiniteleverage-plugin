@@ -1,7 +1,7 @@
-# infiniteleverage (plugin payload)
+# infiniteleverage v1 (plugin payload) — retired
 
-> ⚠️ **Superseded — frozen.** See the root README. The v2 plugin ships from
-> https://github.com/talentedgeai/infiniteleverage-8-agents-template — no new features land here.
+> 🪦 **Retired and archived.** See the root README for moving to v2, which ships from
+> https://github.com/edge8-ai/infinite-leverage.
 
 ## Contents (v1, for reference)
 
